@@ -1,0 +1,83 @@
+#linear regression
+
+import pandas as pd #for dataframe management
+import numpy as np #for working with numbers
+
+cd = pd.read_csv(r"C:\Users\''\Documents\codon_usage_categorical.csv", low_memory=False)
+cd.fillna(0, inplace=True)
+
+cd.drop(columns="SpeciesID", axis=1, inplace=True)
+cd.drop(columns="SpeciesName", axis=1, inplace=True)
+
+category = ['Kingdom']
+
+for var in category:
+        c_list = pd.get_dummies(cd[var], prefix = var)
+        cd = cd.join(c_list)
+
+cd.drop(columns="Kingdom", axis=1, inplace=True)
+cd.head()
+#one hot encoding
+
+X = cd.loc[:, cd.columns != 'DNAtype'] # X (explanatory) = all columns that aren't 'N'
+y = cd.DNAtype # y (response) = 'Kingdom'
+
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
+
+cdf = LinearRegression()
+cdf.fit(X_train, y_train)
+
+cdf.score(X_test, y_test)
+
+#K Nearest Neighbors
+
+import matplotlib.pyplot as plt
+import pandas as pd
+from sklearn import datasets, neighbors
+import mlxtend
+from mlxtend.plotting import plot_decision_regions
+
+import pandas as pd #for dataframe management
+import numpy as np #for working with numbers
+from sklearn.neighbors import KNeighborsClassifier
+
+cd = pd.read_csv(r"C:\Users\''\Documents\codon_usage_categorical.csv", low_memory=False)
+
+cd.fillna(0, inplace=True)
+cd.drop(columns="SpeciesID", axis=1, inplace=True)
+cd.drop(columns="SpeciesName", axis=1, inplace=True)
+
+category = ['Kingdom']
+
+for var in category:
+        c_list = pd.get_dummies(cd[var], prefix = var)
+        cd = cd.join(c_list)
+
+cd.drop(columns="Kingdom", axis=1, inplace=True)
+cd.head()
+
+X = cd.loc[:, cd.columns != 'DNAtype'] 
+y = cd.DNAtype
+
+Xnumpy = X.to_numpy()
+ynumpy = y.to_numpy()
+
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression
+
+Xnumpy_train, Xnumpy_test, ynumpy_train, ynumpy_test = train_test_split(Xnumpy, ynumpy, test_size=0.2)
+
+knn = KNeighborsClassifier(n_neighbors=11)
+knn.fit(Xnumpy,ynumpy)
+pred = knn.predict(Xnumpy_test)
+
+from sklearn.metrics import accuracy_score
+v = accuracy_score(pred,ynumpy_test)
+
+print (v)
+
+s = cd.DNAtype
+s.shape
